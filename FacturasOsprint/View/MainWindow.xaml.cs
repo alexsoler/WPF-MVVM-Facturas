@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MaterialDesignThemes.Wpf;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -20,9 +21,11 @@ namespace FacturasOsprint.View
     /// </summary>
     public partial class MainWindow : Window
     {
+        public static Snackbar Snackbar;
         public MainWindow()
         {
             InitializeComponent();
+            Snackbar = this.MainSnackbar;
         }
     }
 }
