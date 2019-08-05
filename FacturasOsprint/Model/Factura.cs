@@ -15,6 +15,7 @@ namespace FacturasOsprint.Model
         public Factura()
         {
             Servicios = new ObservableCollection<Servicio>();
+            Fecha = DateTime.Now;
         }
         private string cliente;
 
