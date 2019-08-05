@@ -1,0 +1,131 @@
+﻿<UserControl
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
+             xmlns:local="clr-namespace:FacturasOsprint.View"
+             xmlns:ViewModel="clr-namespace:FacturasOsprint.ViewModel" x:Class="FacturasOsprint.View.Facturas"
+             mc:Ignorable="d" 
+             Height="600" Width="670">
+    <UserControl.DataContext>
+        <ViewModel:FacturasViewModel/>
+    </UserControl.DataContext>
+    <Grid>
+        <materialDesign:Card VerticalAlignment="Stretch" UniformCornerRadius="5">
+            <Grid Margin="20,0" DataContext="{Binding Factura}">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="1*"/>
+                    <RowDefinition Height="1*"/>
+                    <RowDefinition Height="1*"/>
+                    <RowDefinition Height="1*"/>
+                    <RowDefinition Height="5*"/>
+                    <RowDefinition Height="1*"/>
+                    <RowDefinition Height="1*"/>
+                    <RowDefinition Height="1*"/>
+                </Grid.RowDefinitions>
+
+                <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Center">
+                    <DatePicker Width="100" 
+                                SelectedDate="{Binding Fecha, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}" 
+                                materialDesign:HintAssist.Hint="Fecha" 
+                                Style="{StaticResource MaterialDesignFloatingHintDatePicker}" />
+                </StackPanel>
+
+                <StackPanel Grid.Row="1" Orientation="Horizontal" VerticalAlignment="Center">
+                    <materialDesign:PackIcon Kind="AccountCircle" Height="35" Width="35" Margin="0,0,10,0" Foreground="{Binding BorderBrush, ElementName=textBoxCliente}" />
+                    <TextBox x:Name="textBoxCliente" materialDesign:HintAssist.Hint="Cliente" Width="260" 
+                             Text="{Binding Cliente, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}" 
+                             Style="{StaticResource MaterialDesignFloatingHintTextBox}" />
+                    <materialDesign:PackIcon Kind="AccountCardDetails" Height="35" Width="35" Margin="20,0,10,0" Foreground="{Binding BorderBrush, ElementName=textBoxRTN}" />
+                    <TextBox x:Name="textBoxRTN" materialDesign:HintAssist.Hint="RTN" Width="260" 
+                             Text="{Binding RTN, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}" 
+                             Style="{StaticResource MaterialDesignFloatingHintTextBox}" />
+                </StackPanel>
+
+                <StackPanel Grid.Row="2" Orientation="Horizontal" VerticalAlignment="Center">
+                    <materialDesign:PackIcon Kind="MapMarker" Height="35" Width="35" Margin="0,0,10,0" Foreground="{Binding BorderBrush, ElementName=textBoxDireccion}" />
+                    <TextBox x:Name="textBoxDireccion" materialDesign:HintAssist.Hint="Dirección" 
+                             Text="{Binding Direccion, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}" 
+                             Style="{StaticResource MaterialDesignFloatingHintTextBox}" Width="585" />
+                </StackPanel>
+
+                <StackPanel Grid.Row="3" Orientation="Horizontal" VerticalAlignment="Center">
+                    <materialDesign:PackIcon Kind="LetterCBox" Height="35" Width="35" Margin="0,0,10,0" Foreground="{Binding BorderBrush, ElementName=textBoxConstanciaExonerados}" />
+                    <TextBox x:Name="textBoxConstanciaExonerados" materialDesign:HintAssist.Hint="Constancia de exonerados" Width="152" 
+                             Text="{Binding ConstanciaExonerados, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}" 
+                             Style="{StaticResource MaterialDesignFloatingHintTextBox}" />
+                    <materialDesign:PackIcon Kind="LetterOBox" Height="35" Width="35" Margin="20,0,10,0" Foreground="{Binding BorderBrush, ElementName=textBoxOrdenCompraExenta}" />
+                    <TextBox x:Name="textBoxOrdenCompraExenta" materialDesign:HintAssist.Hint="Orden de compra exenta" Width="152" 
+                             Text="{Binding OrdenCompraExenta, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}" 
+                             Style="{StaticResource MaterialDesignFloatingHintTextBox}" />
+                    <materialDesign:PackIcon Kind="Numeric" Height="35" Width="35" Margin="20,0,10,0" Foreground="{Binding BorderBrush, ElementName=textBoxNumRegSAG}" />
+                    <TextBox x:Name="textBoxNumRegSAG" materialDesign:HintAssist.Hint="Numero de registro S.A.G." Width="151" 
+                             Text="{Binding NumRegSAG, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}" 
+                             Style="{StaticResource MaterialDesignFloatingHintTextBox}" />
+                </StackPanel>
+
+                <DataGrid Grid.Row="4" Margin="0 8 0 0" ItemsSource="{Binding Servicios}" CanUserSortColumns="True" CanUserAddRows="True" 
+                          materialDesign:DataGridAssist.CellPadding="4 2 2 2" materialDesign:DataGridAssist.ColumnHeaderPadding="4 2 2 2"
+                          AutoGenerateColumns="False">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="CellEditEnding">
+                            <i:InvokeCommandAction Command="{Binding DataContext.CalcularTotalCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}"/>
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                    <DataGrid.Columns>
+                        <materialDesign:MaterialDataGridTextColumn Binding="{Binding Cantidad, UpdateSourceTrigger=PropertyChanged}" Header="Cant." Width="SizeToHeader" EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"/>
+                        <materialDesign:MaterialDataGridTextColumn Binding="{Binding Descripcion, UpdateSourceTrigger=PropertyChanged}" Header="Descripcion" MinWidth="350" Width="SizeToCells" EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"/>
+                        <materialDesign:MaterialDataGridTextColumn Binding="{Binding PrecioUnitario, UpdateSourceTrigger=PropertyChanged, StringFormat={}{0:N2}}" Header="P. Unit." MinWidth="70" Width="SizeToCells" EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"/>
+                        <materialDesign:MaterialDataGridTextColumn Binding="{Binding Descuento, UpdateSourceTrigger=PropertyChanged, StringFormat={}{0:N2}}" Header="Descuento" Width="SizeToHeader" EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"/>
+                        <materialDesign:MaterialDataGridTextColumn Binding="{Binding Total, StringFormat={}{0:N2}}" Header="Total" Width="SizeToCells" MinWidth="60" EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+
+                <StackPanel Grid.Row="5" Orientation="Horizontal" VerticalAlignment="Center">
+                    <materialDesign:PackIcon Kind="FormatLetterCase" Height="35" Width="35" Margin="0,0,10,0" Foreground="{Binding BorderBrush, ElementName=textBoxCantLetras}" />
+                    <TextBox x:Name="textBoxCantLetras" materialDesign:HintAssist.Hint="Cantidad en letras" 
+                             Text="{Binding CantLetras, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}" 
+                             Style="{StaticResource MaterialDesignFloatingHintTextBox}" Width="585" />
+                </StackPanel>
+
+                <StackPanel Grid.Row="6" Orientation="Horizontal" VerticalAlignment="Center">
+                    <TextBox materialDesign:HintAssist.Hint="Importe Exento" 
+                             Text="{Binding ImporteExento, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true, StringFormat={}{0:N2}}" 
+                             Style="{StaticResource MaterialDesignFloatingHintTextBox}" />
+                    <TextBox materialDesign:HintAssist.Hint="Exonerados" Width="72" 
+                             Text="{Binding Exonerados, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true, StringFormat={}{0:N2}}" 
+                             Style="{StaticResource MaterialDesignFloatingHintTextBox}" Margin="20,0,0,0" />
+                    <TextBox materialDesign:HintAssist.Hint="Importe 18%" Width="72"
+                             Text="{Binding Importe18, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true, StringFormat={}{0:N2}}" 
+                             Style="{StaticResource MaterialDesignFloatingHintTextBox}" Margin="20,0,0,0" />
+                    <TextBox materialDesign:HintAssist.Hint="18% ISV" Width="72"
+                             Text="{Binding ISV18, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true, StringFormat={}{0:N2}}" 
+                             Style="{StaticResource MaterialDesignFloatingHintTextBox}" Margin="20,0,0,0" />
+                    <TextBox materialDesign:HintAssist.Hint="Importe 15%" Width="72"
+                             Text="{Binding Importe15, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true, StringFormat={}{0:N2}}" 
+                             Style="{StaticResource MaterialDesignFloatingHintTextBox}" Margin="20,0,0,0" />
+                    <TextBox materialDesign:HintAssist.Hint="15% ISV" Width="72"
+                             Text="{Binding ISV15, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true, StringFormat={}{0:N2}}" 
+                             Style="{StaticResource MaterialDesignFloatingHintTextBox}" Margin="20,0,0,0" />
+                    <TextBox materialDesign:HintAssist.Hint="Total" Width="72"
+                             Text="{Binding Total, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true, StringFormat={}{0:N2}}" 
+                             Style="{StaticResource MaterialDesignFloatingHintTextBox}" Margin="20,0,0,0" />
+
+                </StackPanel>
+
+                <StackPanel Grid.Row="7" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <Button Style="{StaticResource MaterialDesignRaisedAccentButton}"
+                            Width="100" ToolTip="Generar factura" Command="{Binding DataContext.GenerarFacturaCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}">
+                        GENERAR
+                    </Button>
+                    <Button Style="{StaticResource MaterialDesignRaisedButton}"
+                            Width="100" ToolTip="Nueva factura" Margin="20 0 0 0" Command="{Binding DataContext.NuevaFacturaCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}">
+                        NUEVO
+                    </Button>
+                </StackPanel>
+            </Grid>
+        </materialDesign:Card>
+    </Grid>
+</UserControl>
