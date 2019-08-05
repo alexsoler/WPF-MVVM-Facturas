@@ -8,6 +8,8 @@ namespace FacturasOsprint.Model
 {
     public class Servicio : ModelBase
     {
+        public int Id { get; set; }
+
         private int cantidad;
 
         public int Cantidad
